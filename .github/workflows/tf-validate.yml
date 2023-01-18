@@ -1,0 +1,38 @@
+name: tf-validate
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - '**'
+      - '!main'
+    paths-ignore:
+      - '**/README.md'
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: set common environment variables
+        run: cat ./.github/.env >> $GITHUB_ENV
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: "Terraform Format"
+        id: fmt
+        run: terraform fmt
+
+      - name: "Terraform Init"
+        id: init
+        run: terraform init
+
+      - name: "Terraform Validate"
+        id: validate
+        run: terraform validate -no-color
