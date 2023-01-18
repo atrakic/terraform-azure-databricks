@@ -9,7 +9,7 @@ variable "cluster_name" {
 
 variable "cluster_autotermination_minutes" {
   type    = number
-  default = 60
+  default = 30
 }
 
 variable "cluster_num_workers" {

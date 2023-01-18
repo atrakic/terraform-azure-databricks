@@ -26,7 +26,17 @@ resource "databricks_cluster" "this" {
   spark_version           = data.databricks_spark_version.latest_lts.id
   autotermination_minutes = var.cluster_autotermination_minutes
   num_workers             = var.cluster_num_workers
-  #tags                    = var.tags
+
+  # https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/clusters#--azureattributes
+  autoscale {
+    min_workers = 1
+    max_workers = 5
+  }
+  azure_attributes {
+    availability       = "SPOT_WITH_FALLBACK_AZURE"
+    first_on_demand    = 1
+    spot_bid_max_price = 100
+  }
 }
 
 output "cluster_url" {
