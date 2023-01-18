@@ -25,8 +25,9 @@ resource "random_string" "naming" {
   length  = 6
 }
 
-data "azurerm_client_config" "current" {
-}
+data "azurerm_subscription" "current" {}
+
+data "azurerm_client_config" "current" {}
 
 data "external" "me" {
   program = ["az", "account", "show", "--query", "user"]

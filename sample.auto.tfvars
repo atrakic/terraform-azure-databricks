@@ -1,3 +1,4 @@
+# Sample values
 region                          = "westeurope"
 cluster_name                    = "My Cluster"
 cluster_autotermination_minutes = 60

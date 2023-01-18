@@ -1,3 +1,4 @@
-storage_account_name = "sttfstatedevfoo01"
+resource_group_name  = "rg-terraform-example-state"
+storage_account_name = "terraformexample"
 container_name       = "tfstatefiles"
 key                  = "dev.tfstate"
