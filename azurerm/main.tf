@@ -1,7 +1,7 @@
 terraform {
   required_providers {
-    azurerm = "~> 2.33"
-    random  = {} #"~> 3.4.3"
+    azurerm = "~> 3.18.0"
+    random  = "~> 3.4.3"
   }
 }
 
