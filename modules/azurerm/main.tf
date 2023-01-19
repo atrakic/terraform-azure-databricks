@@ -36,12 +36,13 @@ locals {
 }
 
 resource "azurerm_databricks_workspace" "this" {
-  name                        = "${var.prefix}-workspace"
-  resource_group_name         = var.resource_group_name
-  location                    = var.location
-  sku                         = "premium"
-  managed_resource_group_name = "${var.prefix}-workspace-rg"
-  tags                        = merge(var.tags, local.tags)
+  name                          = "${var.prefix}-workspace"
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  sku                           = "premium"
+  managed_resource_group_name   = "${var.prefix}-workspace-rg"
+  public_network_access_enabled = false
+  tags                          = merge(var.tags, local.tags)
 }
 
 output "databricks_host" {
