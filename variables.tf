@@ -1,4 +1,4 @@
-variable "region" {
+variable "location" {
   type    = string
   default = "westeurope"
 }
@@ -25,8 +25,7 @@ variable "notebook_filename" {
 }
 
 variable "notebook_language" {
-  type    = string
-  default = "PYTHON"
+  type = string
 }
 
 variable "job_name" {

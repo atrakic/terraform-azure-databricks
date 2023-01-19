@@ -1,4 +1,5 @@
 locals {
+  prefix = "databricks${random_string.naming.result}"
   tags = {
     Terraform   = "true"
     Environment = "Demo"
@@ -6,14 +7,28 @@ locals {
   }
 }
 
+resource "azurerm_resource_group" "this" {
+  name     = "${local.prefix}-rg"
+  location = var.location
+  tags     = local.tags
+}
+
+resource "random_string" "naming" {
+  special = false
+  upper   = false
+  length  = 6
+}
+
 module "workspace" {
-  source = "./azurerm"
-  region = var.region
-  tags   = local.tags
+  source              = "./modules/azurerm"
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+  prefix              = local.prefix
+  tags                = local.tags
 }
 
 module "databricks" {
-  source                          = "./databricks"
+  source                          = "./modules/databricks"
   databricks_host                 = module.workspace.databricks_host
   cluster_name                    = var.cluster_name
   cluster_autotermination_minutes = var.cluster_autotermination_minutes

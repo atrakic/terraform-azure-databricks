@@ -1,5 +1,5 @@
 # Sample values
-region                          = "westeurope"
+location                        = "westeurope"
 cluster_name                    = "My Cluster"
 cluster_autotermination_minutes = 20
 cluster_num_workers             = 1
