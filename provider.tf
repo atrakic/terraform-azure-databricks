@@ -27,12 +27,10 @@ terraform {
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
 provider "azurerm" {
   # OpenID Connect is an authentication method that uses short-lived tokens
-  #use_oidc = true 
+  #use_oidc = true
   features {
     resource_group {
       prevent_deletion_if_contains_resources = true
     }
   }
 }
-
-data "azurerm_subscription" "current" {}
