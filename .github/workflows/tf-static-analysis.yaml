@@ -1,0 +1,85 @@
+name: tf static analysis
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        terraform: [ ~0.15.0, ~1.0 ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ matrix.terraform }}
+
+      - run: terraform fmt -check=true -recursive
+
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        terraform: [ ~0.15.0, ~1.0 ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ matrix.terraform }}
+
+      - run: |
+          terraform init -backend=false
+          terraform validate || exit 1
+
+  tflint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        terraform: [ ~0.15.0, ~1.0 ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.tflint.d/plugins
+          key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ matrix.terraform }}
+
+      - uses: terraform-linters/setup-tflint@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: |
+           terraform init -backend=false
+           tflint -f compact --config .tflint.hcl || exit 1
+
+  tfsec:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        terraform: [ ~0.15.0, ~1.0 ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ matrix.terraform }}
+
+      - uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

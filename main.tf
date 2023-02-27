@@ -1,3 +1,5 @@
+# data "azurerm_subscription" "current" {}
+
 locals {
   prefix = "databricks${random_string.naming.result}"
   tags = {
