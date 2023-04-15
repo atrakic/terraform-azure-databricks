@@ -1,14 +1,3 @@
-# data "azurerm_subscription" "current" {}
-
-locals {
-  prefix = "databricks${random_string.naming.result}"
-  tags = {
-    Terraform   = "true"
-    Environment = "Demo"
-    Workspace   = terraform.workspace
-  }
-}
-
 resource "azurerm_resource_group" "this" {
   name     = "${local.prefix}-rg"
   location = var.location
@@ -21,8 +10,20 @@ resource "random_string" "naming" {
   length  = 6
 }
 
+locals {
+  prefix = "databricks${random_string.naming.result}"
+  tags = merge(
+    {
+      Workspace = terraform.workspace
+      Terraform = "true"
+    },
+    var.tags,
+  )
+}
+
 module "workspace" {
-  source              = "./modules/azurerm"
+  source = "./modules/azurerm"
+
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
   prefix              = local.prefix
@@ -30,8 +31,8 @@ module "workspace" {
 }
 
 module "databricks" {
-  source                          = "./modules/databricks"
-  databricks_host                 = module.workspace.databricks_host
+  source = "./modules/databricks"
+
   cluster_name                    = var.cluster_name
   cluster_autotermination_minutes = var.cluster_autotermination_minutes
   cluster_num_workers             = var.cluster_num_workers
@@ -39,6 +40,7 @@ module "databricks" {
   notebook_filename               = var.notebook_filename
   notebook_language               = var.notebook_language
   job_name                        = var.job_name
+  databricks_host                 = module.workspace.databricks_host
   data_depends_on                 = [module.workspace.databricks_workspace]
   tags                            = local.tags
 }

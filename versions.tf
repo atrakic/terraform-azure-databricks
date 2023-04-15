@@ -1,4 +1,6 @@
 terraform {
+  required_version = ">= 1.0"
+
   required_providers {
     azurerm = {
       version = "~>3.18.0"
@@ -20,8 +22,6 @@ terraform {
     use_oidc             = true
   }
   */
-
-  required_version = ">= 1.1.7, < 2.0.0"
 }
 
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs

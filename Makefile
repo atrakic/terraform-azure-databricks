@@ -1,7 +1,8 @@
 release: ## Release (eg. V=0.0.1)
 	 @[ "$(V)" ] \
+		 && git config init.defaultBranch | grep "main" >/dev/null \
 		 && read -p "Press enter to confirm and push tag v$(V) to origin, <Ctrl+C> to abort ..." \
-		 && git tag v$(V) -m "chore: v$(V)" \
+		 && git tag v$(V) -m "chore: v$(V) release" \
 		 && git push origin v$(V) -f \
 		 && git fetch --tags --force --all -p \
 		 && if [ ! -z "$(GITHUB_TOKEN)" ] ; then \
