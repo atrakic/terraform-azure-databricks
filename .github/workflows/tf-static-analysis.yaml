@@ -66,6 +66,7 @@ jobs:
 
       - run: |
            terraform init -backend=false
+           tflint --init
            tflint -f compact --config .tflint.hcl || exit 1
 
   tfsec:
