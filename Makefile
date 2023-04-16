@@ -1,3 +1,4 @@
+GITHUB_OWNER ?= atrakic
 release: ## Release (eg. V=0.0.1)
 	 @[ "$(V)" ] \
 		 && git config init.defaultBranch | grep "main" >/dev/null \
@@ -10,6 +11,14 @@ release: ## Release (eg. V=0.0.1)
 			  -H "Authorization: token $(GITHUB_TOKEN)" \
 				-X POST	\
 				-H "Accept: application/vnd.github.v3+json"	\
-				https://api.github.com/repos/atrakic/$(shell basename $$PWD)/releases \
+				https://api.github.com/repos/$(GITHUB_OWNER)/$(shell basename $$PWD)/releases \
 				-d "{\"tag_name\":\"$(V)\",\"generate_release_notes\":true}"; \
 			fi;
+
+test:
+	#terraform -chdir=test init -upgrade
+	go test -v $$(go list ./test/)
+
+.PHONY: all test clean release
+
+-include include.mk
